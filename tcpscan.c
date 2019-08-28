@@ -44,6 +44,7 @@ static void usage()
            "Example: tcpscan -p80,443 -ieth0 192.168.1.0/24\n");
 }
 
+/*get the sync_ipaddr_begin and sync_ipaddr_end*/
 static void init_task(char* str_ip)
 {
     char* p_slash = NULL;
@@ -158,7 +159,7 @@ static void send_syn(in_addr_t src_ipaddr, int src_port, in_addr_t dst_ipaddr, i
         TCP_ISN,    /* sequence number */
         0,    /* acknowledgement */
         TH_SYN,    /* control flags */
-        1024,    /* window */
+        1024,    /* window size*/
         0,    /* checksum - 0 = autofill */
         0,    /* urgent */
         LIBNET_TCP_H,    /* header length */
@@ -388,7 +389,7 @@ int main (int argc, char *argv[])
         }
     }
 
-    TCP_ISN = libnet_get_prand(LIBNET_PRu32);
+    TCP_ISN = libnet_get_prand(LIBNET_PRu32);  /*generates a psuedo-random number*/
     init_net_context(LIBNET_RAW4);
     init_task(argv[optind]);
     snprintf(filter, sizeof filter, "(dst host %s) && tcp[8:4] == %d", libnet_addr2name4(s_src_ipaddr, LIBNET_DONT_RESOLVE), TCP_ISN + 1);
